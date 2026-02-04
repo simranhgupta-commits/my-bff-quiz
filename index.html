@@ -277,7 +277,65 @@
     }
 
     function showResult(){
-      progress.textContent = `done`;
+  progress.textContent = `done`;
+
+  // Count NOs
+  const noCount = answers.filter(a => a === "No").length;
+
+  // Check question 4 (index 3)
+  const q4Yes = answers[3] === "Yes";
+
+  let face = "😐";
+  let title = "Okay.";
+  let subtitle = "I’m processing this.";
+
+  if (q4Yes) {
+    face = "🎉";
+    title = "HOORAH.";
+    subtitle = "At least you’re honest about that.";
+  } else if (noCount >= 2) {
+    face = "😠";
+    title = "Yeah… no.";
+    subtitle = "This made me mad.";
+  }
+
+  const lines = questions.map((q, idx) =>
+    `<div><strong>${escapeHtml(q)}</strong><br/>Answer: ${escapeHtml(answers[idx] || "—")}</div>`
+  ).join("");
+
+  panel.innerHTML = `
+    <div class="result">
+      <div class="face">${face}</div>
+      <div class="rtitle">${title}</div>
+      <div class="rsub">${subtitle}</div>
+    </div>
+
+    <div class="answers">${lines}</div>
+
+    <div class="row2">
+      <button class="ghost" id="restartBtn">Restart</button>
+      <button class="yes" id="copyBtn">Copy answers</button>
+    </div>
+    <div class="tiny">Say what you mean. Mean what you say.</div>
+  `;
+
+  document.getElementById("restartBtn").onclick = () => {
+    i = 0;
+    answers.length = 0;
+    renderQuestion();
+  };
+
+  document.getElementById("copyBtn").onclick = async () => {
+    const text = questions.map((q, idx) => `${q} -> ${answers[idx] || "—"}`).join("\n");
+    try{
+      await navigator.clipboard.writeText(text);
+      alert("Copied!");
+    }catch(e){
+      alert("Couldn’t copy, but you can screenshot it.");
+    }
+  };
+}
+
 
       const lines = questions.map((q, idx) =>
         `<div><strong>${escapeHtml(q)}</strong><br/>Answer: ${escapeHtml(answers[idx] || "—")}</div>`
