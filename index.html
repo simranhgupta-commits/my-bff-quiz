@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>One thing…</title>
+  <style>
+    :root{
+      --bg1:#ffe3ee;
+      --bg2:#fff7fb;
+      --card:#ffffffcc;
+      --border:#f2cfe0;
+      --text:#1f1f1f;
+      --muted:rgba(0,0,0,.55);
+      --yes:#ff4d8d;
+      --no:#ffffff;
+      --shadow: 0 18px 50px rgba(0,0,0,.10);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      color:var(--text);
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width:min(520px, 92vw);
+      padding:14px;
+    }
+
+    .topline{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+      padding:0 6px;
+    }
+
+    .brand{
+      font-weight:800;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: var(--yes);
+      box-shadow: 0 0 0 6px rgba(255,77,141,.15);
+    }
+
+    .progress{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .card{
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid #fff;
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card-inner{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius: 22px;
+      padding:18px;
+    }
+
+    .title{
+      font-size:14px;
+      font-weight:800;
+      color:var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin:0 0 10px;
+    }
+
+    .question{
+      font-size:22px;
+      font-weight:900;
+      margin:0 0 16px;
+      line-height:1.15;
+    }
+
+    .sub{
+      margin:0 0 14px;
+      font-size:13px;
+      color:var(--muted);
+      font-weight:600;
+    }
+
+    .btns{
+      display:flex;
+      gap:10px;
+      margin-top:6px;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      border-radius: 18px;
+      padding: 14px 14px;
+      font-weight:900;
+      font-size:15px;
+      flex:1;
+      transition: transform .12s ease, filter .12s ease;
+      user-select:none;
+    }
+    button:active{ transform: scale(.98); }
+
+    .yes{
+      background: var(--yes);
+      color:#fff;
+      box-shadow: 0 10px 25px rgba(255,77,141,.25);
+    }
+    .no{
+      background: var(--no);
+      color: var(--text);
+      border:1px solid var(--border);
+    }
+
+    .hint{
+      margin-top:12px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+      font-weight:700;
+    }
+
+    .slide{
+      animation: popIn .25s ease;
+    }
+    @keyframes popIn{
+      from{ transform: translateY(10px); opacity:.0; }
+      to{ transform: translateY(0); opacity:1; }
+    }
+
+    .fadeOut{
+      animation: fadeOut .18s ease forwards;
+    }
+    @keyframes fadeOut{
+      to{ opacity:0; transform: translateY(-6px); }
+    }
+
+    /* result */
+    .result{
+      text-align:center;
+      padding:10px 0 2px;
+    }
+    .face{
+      font-size:74px;
+      line-height:1;
+      margin:8px 0 10px;
+    }
+    .rtitle{
+      font-size:24px;
+      font-weight:1000;
+      margin:0 0 8px;
+    }
+    .rsub{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .answers{
+      text-align:left;
+      margin-top:12px;
+      padding:12px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--border);
+      font-size:14px;
+    }
+    .answers div{
+      padding:8px 0;
+      border-bottom:1px dashed #f0d6e3;
+    }
+    .answers div:last-child{ border-bottom:0; }
+    .tiny{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:10px;
+      text-align:center;
+      font-weight:700;
+    }
+    .row2{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+    }
+    .ghost{
+      background:#fff;
+      border:1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topline">
+      <div class="brand"><span class="dot"></span>one thing…</div>
+      <div class="progress" id="progress">1 / 5</div>
+    </div>
+
+    <div class="card">
+      <div class="card-inner slide" id="panel">
+        <!-- injected -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      "Will you ever lie to me again?",
+      "Do you think lying to me is okay?",
+      "Can you be honest with me the way I’m honest with you?",
+      "Are you actually sorry for what you did?",
+      "Do you even want to be my friend?"
+    ];
+
+    const answers = [];
+    let i = 0;
+
+    const panel = document.getElementById("panel");
+    const progress = document.getElementById("progress");
+
+    function renderQuestion() {
+      progress.textContent = `${Math.min(i+1, questions.length)} / ${questions.length}`;
+
+      panel.classList.remove("fadeOut");
+      panel.classList.add("slide");
+
+      panel.innerHTML = `
+        <div class="title">tap one</div>
+        <div class="question">${escapeHtml(questions[i])}</div>
+        <div class="sub">No overthinking. Just be real.</div>
+        <div class="btns">
+          <button class="yes" id="yesBtn">YES</button>
+          <button class="no" id="noBtn">NO</button>
+        </div>
+        <div class="hint">✨ aesthetic mode: on</div>
+      `;
+
+      document.getElementById("yesBtn").onclick = () => pick("Yes");
+      document.getElementById("noBtn").onclick = () => pick("No");
+    }
+
+    function pick(value){
+      answers[i] = value;
+
+      // animate out then move forward
+      panel.classList.remove("slide");
+      panel.classList.add("fadeOut");
+
+      setTimeout(() => {
+        i++;
+        if (i >= questions.length) {
+          showResult();
+        } else {
+          renderQuestion();
+        }
+      }, 170);
+    }
+
+    function showResult(){
+      progress.textContent = `done`;
+
+      const lines = questions.map((q, idx) =>
+        `<div><strong>${escapeHtml(q)}</strong><br/>Answer: ${escapeHtml(answers[idx] || "—")}</div>`
+      ).join("");
+
+      panel.innerHTML = `
+        <div class="result">
+          <div class="face" aria-label="angry face">😠</div>
+          <div class="rtitle">Yeah… I’m still mad.</div>
+          <div class="rsub">No matter what you picked.</div>
+        </div>
+
+        <div class="answers" id="answersBox">${lines}</div>
+
+        <div class="row2">
+          <button class="ghost" id="restartBtn">Restart</button>
+          <button class="yes" id="copyBtn">Copy answers</button>
+        </div>
+        <div class="tiny">Send the screenshot… or paste the copied answers 😤</div>
+      `;
+
+      document.getElementById("restartBtn").onclick = () => {
+        i = 0;
+        answers.length = 0;
+        renderQuestion();
+      };
+
+      document.getElementById("copyBtn").onclick = async () => {
+        const text = questions.map((q, idx) => `${q} -> ${answers[idx] || "—"}`).join("\n");
+        try{
+          await navigator.clipboard.writeText(text);
+          alert("Copied!");
+        }catch(e){
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          alert("Copied!");
+        }
+      };
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
